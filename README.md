@@ -35,3 +35,9 @@ multipleFileUploadWithExpressJS
         });
       });
 ```
+
+####TODO####
+  - upload files with ajax automatically when they are selected.
+  - when multiple files are selected, show them immediately, add progress indicator as well.
+  - add support for older shitty browsers, that doesn't support html5 multiple file upload  
+  - consider <a href="http://www.uploadify.com/demos/" target="_blank">uploadify.com/demos/</a> as a possible fallback.
