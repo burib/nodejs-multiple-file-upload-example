@@ -1,10 +1,9 @@
 function initPage() {
-	console.log('page ready');
 	onUploadForm();	
 };
 
 function onUploadForm() {
-	var uploadForm = document.forms['uploadForm'];
+	var uploadForm = document.forms['ajaxUploadForm'];
 
 	uploadForm.onsubmit = function(event) {
 		event.preventDefault();
@@ -23,7 +22,7 @@ function onUploadForm() {
 		var uploadedImagesContainer = document.getElementById('uploadedImages');
 
 		responseText['uploadedFileNames'].forEach(function(value) {
-			uploadedImagesContainer.innerHTML += '<img src="/uploads/' + value + '" width="150" />';
+			uploadedImagesContainer.innerHTML += '<img src="/uploads/' + value.base + '" width="150" />';
 		});
 
 	}

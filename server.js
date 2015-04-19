@@ -6,7 +6,19 @@ var express = require('express'),
     sys = require('sys'),
     fs = require('fs'),
     path = require('path'),
-    bytes = require('bytes');
+    bytes = require('bytes'),
+    parseFile = function(file, req) {
+      var parsedFile = path.parse(file),
+      fullUrl = req.protocol + '://' + req.get('host') + '/uploads/';
+
+      return {
+            name: parsedFile.name,
+            base: parsedFile.base,
+            extension: parsedFile.ext.substring(1),
+            url: fullUrl + parsedFile.base,
+            size: bytes(fs.statSync(file).size)
+          };
+    };
 
 app.set('port', process.env.PORT || 1526);
 app.use(express.static(__dirname + '/public'));
@@ -15,24 +27,32 @@ app.use(express.bodyParser({ keepExtensions: true, uploadDir: __dirname + '/_tmp
 app.post('/uploadFiles', function (req, res) {
   var newPath = null,
       uploadedFileNames = [],
-      uploadedImages;
+      uploadedImages,
+      uploadedImagesCounter = 0;
       
   if(req.files && req.files.uploadedImages) {
     uploadedImages = Array.isArray(req.files.uploadedImages) ? req.files.uploadedImages : [req.files.uploadedImages];
 
-    uploadedImages.forEach(function (element, index, array) {
-      fs.readFile(element.path, function (err, data) {
-        newPath = __dirname + "/public/uploads/" + element.name;
-        uploadedFileNames.push(element.name);
+    uploadedImages.forEach(function (value) {
+      fs.readFile(value.path, function (err, data) {
+        newPath = __dirname + "/public/uploads/" + value.name;
+
         fs.writeFile(newPath, data, function (err) {
           if(err) {
             sys.log(err);
+          } else {
+            uploadedImagesCounter++; // I need to refactor this part to make it truly async.
+
+            if(uploadedImages.length - 1 === uploadedImagesCounter) {
+              res.type('application/json');
+              res.send(JSON.parse(JSON.stringify({"uploadedFileNames": uploadedFileNames})));
+            }
           }
         });
-        if(index === array.length - 1) {
-          res.type('application/json');
-          res.send(JSON.stringify({"uploadedFileNames": uploadedFileNames}));
-        }
+
+
+        uploadedFileNames.push(parseFile(newPath, req))
+
       });
     });
 
@@ -40,8 +60,7 @@ app.post('/uploadFiles', function (req, res) {
 });
 
 app.get('/files', function (req, res) {
-  var dirPath = path.normalize('./public/uploads/'),
-      fullUrl = req.protocol + '://' + req.get('host') + '/uploads/';
+  var dirPath = path.normalize('./public/uploads/');
  
   fs.readdir(dirPath, function (err, files) {
       if (err) {
@@ -56,15 +75,7 @@ app.get('/files', function (req, res) {
       }).filter(function (file) {
           return fs.statSync(file).isFile();
       }).map(function (file) {
-        var parsedFile = path.parse(file);
-
-          return {
-                name: parsedFile.name,
-                base: parsedFile.base,
-                extension: parsedFile.ext.substring(1),
-                url: fullUrl + parsedFile.base,
-                size: bytes(fs.statSync(file).size)
-              };
+          return parseFile(file, req);
       });
 
       res.type('application/json');

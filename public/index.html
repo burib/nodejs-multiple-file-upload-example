@@ -13,16 +13,29 @@
   <link rel="shortcut icon" href="favicon.ico"/>
   <link rel="icon" type="image/ico" href="favicon.ico"/>
   <link rel="stylesheet" type="text/css" href="http://getbootstrap.com/dist/css/bootstrap.min.css"/>
-  <title>Multiple File Upload With ExpressJS</title>
+  <title>Multiple File Upload With ExpressJS 3.x</title>
 </head>
-<style> body {padding: 3%} </style>
+<style> 
+    body { padding: 3%} 
+    #uploadedImages img { display: inline-block; margin: 5px; }
+  </style>
 <body onload="initPage()">
-  <h1>Multiple File Upload With ExpressJS ( node.js )</h1>
+  <h1>Multiple File Upload With ExpressJS 3.x using ajax</h1><br />
+  <h3>without ajax ( redirecting to a new page )</h3>
   <form action="/uploadFiles", method="post", enctype="multipart/form-data" name="uploadForm">
     <input type="file" multiple="multiple" accept="image/*" name="uploadedImages"/><br/>
-    <div id="uploadedImages"></div>
     <input type="submit" value="Upload" class="btn btn-info" />
   </form>
+  <hr />
+  <h3>with ajax</h3>
+  <form action="/uploadFiles", method="post", enctype="multipart/form-data" name="ajaxUploadForm">
+    <input type="file" multiple="multiple" accept="image/*" name="uploadedImages"/><br/>
+    <div id="uploadedImages"></div>
+    <input type="submit" value="Upload in background" class="btn btn-info" />
+  </form>
+
+
+
   <script src="app.js" async="true"></script>
 </body>
 </html>
