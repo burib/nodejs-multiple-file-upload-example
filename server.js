@@ -12,9 +12,13 @@ app.use(express.bodyParser({ keepExtensions: true, uploadDir: __dirname + '/_tmp
 
 app.post('/uploadFiles', function (req, res) {
   var newPath = null,
-      uploadedFileNames = [];
+      uploadedFileNames = [],
+      uploadedImages;
+      
   if(req.files && req.files.uploadedImages) {
-    req.files.uploadedImages.forEach(function (element, index, array) {
+    uploadedImages = Array.isArray(req.files.uploadedImages) ? req.files.uploadedImages : [req.files.uploadedImages];
+
+    uploadedImages.forEach(function (element, index, array) {
       fs.readFile(element.path, function (err, data) {
         newPath = __dirname + "/public/uploads/" + element.name;
         uploadedFileNames.push(element.name);
@@ -28,6 +32,7 @@ app.post('/uploadFiles', function (req, res) {
         }
       });
     });
+
   }
 });
 
