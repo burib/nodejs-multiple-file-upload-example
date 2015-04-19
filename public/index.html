@@ -16,11 +16,13 @@
   <title>Multiple File Upload With ExpressJS</title>
 </head>
 <style> body {padding: 3%} </style>
-<body>
+<body onload="initPage()">
   <h1>Multiple File Upload With ExpressJS ( node.js )</h1>
-  <form action="/uploadFiles", method="post", enctype="multipart/form-data">
+  <form action="/uploadFiles", method="post", enctype="multipart/form-data" name="uploadForm">
     <input type="file" multiple="multiple" accept="image/*" name="uploadedImages"/><br/>
-    <input type="submit" value="Upload" class="btn btn-info">
+    <div id="uploadedImages"></div>
+    <input type="submit" value="Upload" class="btn btn-info" />
   </form>
+  <script src="app.js" async="true"></script>
 </body>
 </html>

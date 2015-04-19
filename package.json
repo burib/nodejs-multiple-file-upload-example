@@ -5,6 +5,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "bytes": "^2.0.0",
     "express": "^3.20.2"
   }
 }
