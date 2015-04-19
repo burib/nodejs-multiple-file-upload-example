@@ -1,7 +1,7 @@
 multipleFileUploadWithExpressJS
 ===============================
 
-**Description:** how to upload multiple files and save them with express.js ( node.JS library )
+**Description:** how to upload multiple files and save them with express.js version 3.x ( node.JS library )
 
 ## ___ important key factors ___##
 
