@@ -34,27 +34,14 @@ app.post('/uploadFiles', function (req, res) {
     uploadedImages = Array.isArray(req.files.uploadedImages) ? req.files.uploadedImages : [req.files.uploadedImages];
 
     uploadedImages.forEach(function (value) {
-      fs.readFile(value.path, function (err, data) {
-        newPath = __dirname + "/public/uploads/" + value.name;
+      newPath = __dirname + "/public/uploads/" + path.parse(value.path).base;
+      fs.renameSync(value.path, newPath);
 
-        fs.writeFile(newPath, data, function (err) {
-          if(err) {
-            sys.log(err);
-          } else {
-            uploadedImagesCounter++; // I need to refactor this part to make it truly async.
-
-            if(uploadedImages.length - 1 === uploadedImagesCounter) {
-              res.type('application/json');
-              res.send(JSON.parse(JSON.stringify({"uploadedFileNames": uploadedFileNames})));
-            }
-          }
-        });
-
-
-        uploadedFileNames.push(parseFile(newPath, req))
-
-      });
+      uploadedFileNames.push(parseFile(newPath, req));
     });
+
+    res.type('application/json');
+    res.send(JSON.parse(JSON.stringify({"uploadedFileNames": uploadedFileNames})));
 
   }
 });
